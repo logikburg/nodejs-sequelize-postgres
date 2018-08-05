@@ -1,0 +1,32 @@
+{
+  "name": "Fullstack Technical Challenge",
+  "version": "1.0.0",
+  "description": "repository for Fullstack Technical Challenge Scenario 1",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"No test\""
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/"
+  },
+  "keywords": [
+    "sequelize", "postgres", "node"
+  ],
+  "author": "sandeep.dualsoft@gmail.com",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/"
+  },
+  "homepage": "https://github.com/",
+  "dependencies": {
+    "body-parser": "^1.18.2",
+    "express": "^4.16.3",
+    "mysql2": "^1.5.3",
+    "sequelize": "^4.37.4",
+    "pg": "^6.1.2"
+  },
+  "devDependencies": {
+    "nodemon": "^1.17.2"
+  }
+}

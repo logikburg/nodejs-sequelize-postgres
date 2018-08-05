@@ -1,0 +1,75 @@
+
+The database design (data migration, data type, concurrency, security)
+
+CREATE TABLE IF NOT EXISTS "users" ("id"  SERIAL, "username" VARCHAR(100) NOT NULL , "password" VARCHAR(255) NOT NULL, "email" VARCHAR(255) NOT NULL UNIQUE, "token" VARCHAR(255), "active" BOOLEAN NOT NULL DEFAULT true, "createdAt" TIMESTAMP WITH TIME ZONE NOT NULL, "updatedAt" TIMESTAMP WITH TIME ZONE NOT NULL, PRIMARY KEY ("username"));
+
+CREATE TABLE IF NOT EXISTS "userDetails" ("id"   SERIAL , "dob" DATE, "firstname" VARCHAR(255), "lastname" VARCHAR(255), "policycode" VARCHAR(8), "geneticresult" JSON, "createdAt" TIMESTAMP WITH TIME ZONE NOT NULL, "updatedAt" TIMESTAMP WITH TIME ZONE NOT NULL, "username" VARCHAR(100) REFERENCES "users" ("username") ON DELETE SET NULL ON UPDATE CASCADE, PRIMARY KEY ("id"));
+
+The API design  (functional aspect, concurrency, security)
+I am going to implement based on RESTful model. Any customer can access using http. I will provide a dynamic token to each customer based on certain criteria or uniqueness among.
+Each token is associated to each username and concurrency can be handled explicitly. I can explain further.
+
+	We can get user detail resource by calling
+I.e. http://localhost:3000/api/usersDetail/{userId} to get userDetails associated to username.
+
+
+Any application and network level security consideration
+There are many ways to provide securities. For resources, we can implemented access control list and for application we can implement Authorised token to secure our application.
+
+Explanation on how to scale up and down both API and database to handle variable traffic
+
+Adding more resources to server i.e. adding more CPU, RAM, or disk space. We can not predict how much more resources we require to handle the variable traffic. This is not best option, Instead I would like to go with Cloud computing service providers.
+With Cloud computing we can scale horizontally and can scale up and down on the fly in minutes. We can choose any cloud service providers like Amazon and Google. They have load balancer that distribute requests. Those load balancers handle some of the difficult, Cloud computing providers can add or remove resources on the fly in minutes. This allows us to scale up to our customer demands very quickly and it allows us to stop using resources as we need less and less of them.
+
+instructions to bring up the service.
+
+nodejs based application
+npm install
+help to Install dependentency to run application
+node index.js
+		Initiate the server to accept incoming request
+
+a testing strategy for this service.
+
+POST /api/users
+// create a new user
+Request:
+{ username, password, email } as string
+Response:
+{ User } as json object
+
+POST /api/authenticate
+// authorization a user by supplying username, password
+		Request:
+{ username, password } as string
+Response:
+{ username, token, expiresIn } as json object
+
+POST /api/logout
+// authorization a user by supplying username, token
+		Request:
+[Token] as header field
+{ username, token } as string
+Response:
+{ message } as string
+
+POST /api/userDetails
+// create a detail data for user such as policy, genetic result etc.
+		Request:
+			[Token] as header field
+{ username, dob, firstname, lastname, geneticresult} as string
+Response:
+{ UserDetails } as json object
+
+GET /api/usersDetail/{username}
+// get detail data for a user such as policy, genetic result etc.
+		Request:
+			[Token] as header field
+Response:
+{ UserDetails } as json object
+GET /api/usersDetail/{username}/geneticresult
+// get only geneticresult data for a user.
+		Request:
+			[Token] as header field
+Response:
+{ geneticresult } as json object

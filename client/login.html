@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>login</title>
+        <link href="public/main.css" rel="stylesheet"/>
+    </head>
+    <body>
+        <div class="login-page">
+            <div class="form">
+                <div id="error"></div>
+                <form class="login-form">
+                    <input id="username" type="text" name="username" placeholder="username"/>
+                    <input id="password" type="password" name="password" placeholder="password"/>
+                    <button onclick="submitForm(event)">login</button>
+                </form>
+            </div>
+        </div>
+    </body>
+    <script>
+        function submitForm(event) {
+            event.preventDefault();
+
+            const username = document.getElementById("username").value;
+            const password = document.getElementById("password").value;
+
+            if (username === '' || password === '') {
+                document.getElementById("error").innerHTML = "Please provide username and password";
+            } else {
+                const req = new XMLHttpRequest();
+
+                req.onreadystatechange = function(event) {
+                    // XMLHttpRequest.DONE === 4
+                    if (this.readyState === XMLHttpRequest.DONE) {
+                        if (this.status === 200) {
+                            if (typeof this.responseURL == 'string') {
+                                window.location = this.responseURL
+                            }
+                        } else {
+                            document.getElementById("error").innerHTML = JSON.parse(this.response).error;
+                        }
+                    }
+                }
+                ;
+
+                req.open('POST', 'http://localhost:3000/api/authenticate', true);
+                req.setRequestHeader("Content-type", "application/json");
+                var login = {username: username, password: password};
+                //req.send('username=' + username + '&password=' + password);
+                req.send(JSON.stringify(login));
+            }
+        }
+    </script>
+</html>
